@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 
-export function GitHubStars({ repo = "aircrushin/ProrisePromptMinder", className = "" }) {
+export function GitHubStars({ repo = "prorise-cool/ProrisePromptMinder", className = "" }) {
   const [stars, setStars] = useState(null);
   const [loading, setLoading] = useState(true);
 

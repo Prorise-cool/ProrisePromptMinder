@@ -121,7 +121,7 @@ For detailed deployment instructions, please refer to: [**DEPLOY_GUIDE.md**](./D
 3. Configure environment variables
 4. Deploy and get the access address
 
-[![Deployed on Zeabur](https://zeabur.com/deployed-on-zeabur-dark.svg)](https://zeabur.com/referral?referralCode=aircrushin&utm_source=aircrushin&utm_campaign=oss)
+[![Deployed on Zeabur](https://zeabur.com/deployed-on-zeabur-dark.svg)](https://zeabur.com/referral?referralCode=prorise-cool&utm_source=prorise-cool&utm_campaign=oss)
 
 ## 🗃 Database Configuration
 

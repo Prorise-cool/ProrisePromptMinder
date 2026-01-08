@@ -120,7 +120,7 @@ pnpm dev
 3. 配置环境变量
 4. 部署并获取访问地址
 
-[![Deployed on Zeabur](https://zeabur.com/deployed-on-zeabur-dark.svg)](https://zeabur.com/referral?referralCode=aircrushin&utm_source=aircrushin&utm_campaign=oss)
+[![Deployed on Zeabur](https://zeabur.com/deployed-on-zeabur-dark.svg)](https://zeabur.com/referral?referralCode=prorise-cool&utm_source=prorise-cool&utm_campaign=oss)
 
 ## 🗃 数据库配置
 

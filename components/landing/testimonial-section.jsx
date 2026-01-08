@@ -20,7 +20,7 @@ export function TestimonialSection({ t }) {
         },
         {
           content: "Prompt Minder creates a great debugging environment.",
-          author: "aircrushin",
+          author: "prorise-cool",
           title: "AI Enthusiast",
         },
       ],

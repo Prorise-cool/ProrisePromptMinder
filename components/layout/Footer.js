@@ -37,7 +37,7 @@ export default function Footer({ t }) {
             </p>
             <div className="flex space-x-6">
               <Link
-                href="https://github.com/aircrushin/ProrisePromptMinder"
+                href="https://github.com/prorise-cool/ProrisePromptMinder"
                 target="_blank"
                 className="text-muted-foreground hover:text-foreground transition-colors duration-200"
               >
