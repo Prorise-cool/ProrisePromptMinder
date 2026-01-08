@@ -1,16 +1,12 @@
 <div align="center">
-  <h1>ProrisePromptMinder</h1>
+  <h1> ProrisePromptMinder </h1>
   <p>
-    <a href="README.md">中文</a> | 
-    <a href="README_EN.md">English</a>
+    <a href="README.md"> 中文 </a> | 
+    <a href="README_EN.md"> English </a>
   </p>
+  <p> 一个专业的提示词管理平台，让 AI 提示词管理更简单、更高效 </p>
 </div>
-
-# ProrisePromptMinder
-
-一个专业的提示词管理平台，让 AI 提示词管理更简单、更高效
-
-![主页](/public/main-page.png)
+![首页图片](public/main-page.png)
 
 ## 🌟 特性
 
@@ -99,154 +95,65 @@ npm run dev
 pnpm dev
 ```
 
-访问 [http://localhost:3000](http://localhost:3000) 查看应用。
+访问 [http://localhost: 3000](http://localhost:3000) 查看应用。
 
 ## 📦 部署指南
 
-### Vercel 部署
+详细的部署教程请参考：[**DEPLOY_GUIDE.md**](./DEPLOY_GUIDE.md)
 
-1. **准备工作**
+### 快速部署
 
-   - Fork 本项目到你的 GitHub 账户
-   - 注册并登录 [Vercel](https://vercel.com)
-2. **部署步骤**
+#### Vercel 部署（推荐）
 
-   - 在 Vercel 中点击 `New Project`
-   - 选择 `Import Git Repository`
-   - 选择你 fork 的项目
-   - 配置环境变量（见上方环境变量说明）
-   - 点击 `Deploy`
-3. **自动部署**
+📖 **完整教程**：请查看 [DEPLOY_GUIDE.md](./DEPLOY_GUIDE.md) 获取详细的步骤说明。
 
-   - 部署完成后，每次推送到主分支都会自动重新部署
+**快速步骤**：
+1. Fork 本项目到你的 GitHub 账户
+2. 在 [Vercel](https://vercel.com) 中导入项目
+3. 配置环境变量（参考上方环境变量说明）
+4. 点击部署，等待完成
 
-### Zeabur 部署
+#### Zeabur 部署
 
 1. 访问 [Zeabur](https://zeabur.com) 并登录
 2. 创建新项目并连接 GitHub 仓库
 3. 配置环境变量
 4. 部署并获取访问地址
 
-   [![Deployed on Zeabur](https://zeabur.com/deployed-on-zeabur-dark.svg)](https://zeabur.com/referral?referralCode=aircrushin&utm_source=aircrushin&utm_campaign=oss)
+[![Deployed on Zeabur](https://zeabur.com/deployed-on-zeabur-dark.svg)](https://zeabur.com/referral?referralCode=aircrushin&utm_source=aircrushin&utm_campaign=oss)
 
 ## 🗃 数据库配置
 
 ### Supabase 设置
 
-1. **创建项目**
+详细的数据库配置步骤请参考：[**DEPLOY_GUIDE.md - 第二步：配置 Supabase 数据库**](./DEPLOY_GUIDE.md#第二步配置-supabase-数据库)
 
-   - 注册 [Supabase](https://supabase.com) 账户
-   - 创建新项目
-   - 获取项目 URL 和匿名密钥
-2. **创建数据表**
-   执行以下 SQL 语句创建所需的数据表：
+**快速步骤**：
+1. 注册 [Supabase](https://supabase.com) 账户并创建项目
+2. 获取项目 URL 和匿名密钥
+3. 在 Supabase SQL Editor 中按顺序执行 `/sql` 目录下的 SQL 文件：
+   - `sql/teams.sql` - 创建团队相关表
+   - `sql/project.sql` - 创建项目表
+   - `sql/prompts.sql` - 创建提示词表
+   - `sql/tags.sql` - 创建标签表
+   - `sql/provider_keys.sql` - 创建 API 密钥表
+   - `sql/contributions.sql` - 创建贡献表（可选）
 
-```sql
--- 创建 prompts 表
-CREATE TABLE prompts (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    title TEXT NOT NULL,
-    content TEXT NOT NULL,
-    description TEXT,
-    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-    is_public BOOLEAN DEFAULT false,
-    user_id TEXT,
-    version TEXT,
-    tags TEXT,
-    cover_img TEXT,
-    team_id UUID REFERENCES teams(id) ON DELETE CASCADE
-);
-
--- 创建 tags 表
-CREATE TABLE tags (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    name TEXT NOT NULL,
-    user_id TEXT,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-    team_id UUID REFERENCES teams(id) ON DELETE CASCADE,
-    UNIQUE(name, user_id)
-);
-
--- 创建 teams 表
-CREATE TABLE teams (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    name TEXT NOT NULL,
-    description TEXT,
-    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-    created_by TEXT NOT NULL,
-    avatar_url TEXT,
-    is_personal BOOLEAN DEFAULT false
-);
-
--- 创建团队成员关系表
-CREATE TABLE team_user_relation (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    team_id UUID,
-    user_id TEXT NOT NULL,
-    role TEXT NOT NULL CHECK (role IN ('owner', 'admin', 'member')),
-    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-    created_by TEXT,
-    UNIQUE(team_id, user_id)
-);
-
--- 创建贡献表
-CREATE TABLE prompt_contributions (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    title TEXT NOT NULL,
-    role_category TEXT NOT NULL,
-    content TEXT NOT NULL,
-    contributor_email TEXT,
-    contributor_name TEXT,
-    status TEXT NOT NULL DEFAULT 'pending',
-    admin_notes TEXT,
-    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-    reviewed_at TIMESTAMPTZ,
-    reviewed_by TEXT,
-    published_prompt_id UUID,
-    CONSTRAINT valid_status CHECK (status IN ('pending', 'approved', 'rejected'))
-);
-```
-
-更多 SQL 文件可以在 `/sql` 目录中找到。
-
-### 团队协作迁移指南
-
-现有用户升级到团队协作版本时，需要按顺序执行以下步骤：
-
-1. **应用最新数据库结构**
-   - 依次运行 `sql/teams.sql`, `sql/project.sql`, `sql/prompts.sql`, `sql/tags.sql`，确保新增的外键、检查约束和索引落地。
-2. **回填历史数据**
-   - 执行 `sql/backfill_team_data.sql`，它会为每位用户创建个人团队并将既有提示词、项目、标签挂接到对应团队。
-   - 迁移后可通过脚本末尾的查询检查是否仍存在缺失 `team_id` 的记录。
-3. **发布前校验**
-   - 确认 `team_members` 表中每个团队仅保留一个 `owner`，同时 `teams.owner_id` 与对应成员一致。
-   - 为生产环境配置 `SUPABASE_URL` / `SUPABASE_ANON_KEY`，并在部署前运行 `npm run lint && npm test`。
-
-> 建议先在测试环境导入生产快照验证迁移脚本，确认无数据丢失后再在生产执行。
+> 💡 **提示**：所有 SQL 文件都包含 `IF NOT EXISTS` 检查，可以安全地重复执行。
 
 ## 🔐 认证配置
 
 ### Clerk 设置
 
-1. **创建 Clerk 应用**
+详细的认证配置步骤请参考：[**DEPLOY_GUIDE.md - 第三步：配置 Clerk 认证**](./DEPLOY_GUIDE.md#第三步配置-clerk-认证)
 
-   - 访问 [Clerk](https://clerk.com)
-   - 创建新应用
-   - 选择认证方式（邮箱、社交登录等）
-2. **配置 OAuth 提供商**
+**快速步骤**：
+1. 访问 [Clerk](https://clerk.com) 并创建新应用
+2. 选择认证方式（推荐：Email、Google、GitHub）
+3. 获取 Publishable Key 和 Secret Key
+4. 添加到环境变量中
 
-   - 在 Clerk 控制台中启用 GitHub、Google 等登录方式
-   - 配置回调 URL
-3. **获取密钥**
-
-   - 复制 Publishable Key 和 Secret Key
-   - 添加到环境变量中
-
-详细配置请参考 [Clerk 官方文档](https://clerk.com/docs)
+更多信息请参考 [Clerk 官方文档](https://clerk.com/docs)
 
 ## 🌍 国际化
 
@@ -291,10 +198,15 @@ ProrisePromptMinder/
 
 ### 代码规范
 
-- 使用 ESLint 进行代码检查
-- 遵循 React Hooks 最佳实践
-- 组件使用 TypeScript (推荐)
-- CSS 使用 Tailwind CSS
+详细的代码规范请参考：[**AGENTS.md**](./AGENTS.md)
+
+**主要规范**：
+- ✅ 使用 ESLint 进行代码检查
+- ✅ 遵循 React Hooks 最佳实践
+- ✅ 使用 JavaScript (jsx/js 文件)
+- ✅ CSS 使用 Tailwind CSS
+- ✅ 使用绝对路径导入 (`@/components/...`)
+- ✅ 组件导出在文件底部
 
 ### 贡献指南
 
@@ -314,7 +226,6 @@ ProrisePromptMinder/
 2. 获取 Canny URL
 3. 在应用的 Footer 组件中配置链接
 
-
 ## 📄 许可证
 
 本项目采用 [MIT 许可证](LICENSE)。
@@ -328,10 +239,9 @@ ProrisePromptMinder/
 - 🐛 提交 Bug 报告
 - 💡 提出新功能建议
 
-<a href="https://www.buymeacoffee.com/aircrushin" target="_blank">
-  <img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" style="height: 60px !important;width: 217px !important;" >
-</a>
 
 ---
 
-**ProrisePromptMinder** - 让 AI 提示词管理更简单 ✨
+<div align="center">
+  <strong> ProrisePromptMinder </strong> - 让 AI 提示词管理更简单 ✨
+</div>

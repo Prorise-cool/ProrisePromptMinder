@@ -4,13 +4,10 @@
     <a href="README.md">中文</a> | 
     <a href="README_EN.md">English</a>
   </p>
+  <p>A professional prompt management platform that makes AI prompt management simpler and more efficient</p>
 </div>
+![HomeImage](https://prorise-blog.oss-cn-guangzhou.aliyuncs.com/cover/main-page.png)
 
-# ProrisePromptMinder
-
-A professional prompt management platform that makes AI prompt management simpler and more efficient
-
-![Main Page](/public/main-page.png)
 
 ## 🌟 Features
 
@@ -103,135 +100,61 @@ Visit [http://localhost:3000](http://localhost:3000) to view the application.
 
 ## 📦 Deployment Guide
 
-### Vercel Deployment
+For detailed deployment instructions, please refer to: [**DEPLOY_GUIDE.md**](./DEPLOY_GUIDE.md)
 
-1. **Preparation**
+### Quick Deployment
 
-   - Fork this project to your GitHub account
-   - Register and log in to [Vercel](https://vercel.com)
-2. **Deployment Steps**
+#### Vercel Deployment (Recommended)
 
-   - Click `New Project` in Vercel
-   - Select `Import Git Repository`
-   - Choose your forked project
-   - Configure environment variables (see environment variables description above)
-   - Click `Deploy`
-3. **Automatic Deployment**
+📖 **Full Tutorial**: See [DEPLOY_GUIDE.md](./DEPLOY_GUIDE.md) for detailed step-by-step instructions.
 
-   - After deployment, each push to the main branch will automatically redeploy
+**Quick Steps**:
+1. Fork this project to your GitHub account
+2. Import the project in [Vercel](https://vercel.com)
+3. Configure environment variables (see environment variables above)
+4. Click Deploy and wait for completion
 
-### Zeabur Deployment
+#### Zeabur Deployment
 
 1. Visit [Zeabur](https://zeabur.com) and log in
 2. Create a new project and connect your GitHub repository
 3. Configure environment variables
 4. Deploy and get the access address
 
-   [![Deployed on Zeabur](https://zeabur.com/deployed-on-zeabur-dark.svg)](https://zeabur.com/referral?referralCode=aircrushin&utm_source=aircrushin&utm_campaign=oss)
+[![Deployed on Zeabur](https://zeabur.com/deployed-on-zeabur-dark.svg)](https://zeabur.com/referral?referralCode=aircrushin&utm_source=aircrushin&utm_campaign=oss)
 
 ## 🗃 Database Configuration
 
 ### Supabase Setup
 
-1. **Create a project**
+For detailed database configuration steps, please refer to: [**DEPLOY_GUIDE.md - Step 2: Configure Supabase Database**](./DEPLOY_GUIDE.md#第二步配置-supabase-数据库)
 
-   - Register for a [Supabase](https://supabase.com) account
-   - Create a new project
-   - Get the project URL and anonymous key
-2. **Create data tables**
-   Execute the following SQL statements to create the required data tables:
+**Quick Steps**:
+1. Register for a [Supabase](https://supabase.com) account and create a project
+2. Get the project URL and anonymous key
+3. Execute SQL files from the `/sql` directory in order in Supabase SQL Editor:
+   - `sql/teams.sql` - Create team-related tables
+   - `sql/project.sql` - Create project table
+   - `sql/prompts.sql` - Create prompts table
+   - `sql/tags.sql` - Create tags table
+   - `sql/provider_keys.sql` - Create API keys table
+   - `sql/contributions.sql` - Create contributions table (optional)
 
-```sql
--- Create prompts table
-CREATE TABLE prompts (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    title TEXT NOT NULL,
-    content TEXT NOT NULL,
-    description TEXT,
-    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-    is_public BOOLEAN DEFAULT false,
-    user_id TEXT,
-    version TEXT,
-    tags TEXT,
-    cover_img TEXT,
-    team_id UUID REFERENCES teams(id) ON DELETE CASCADE
-);
-
--- Create tags table
-CREATE TABLE tags (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    name TEXT NOT NULL,
-    user_id TEXT,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-    team_id UUID REFERENCES teams(id) ON DELETE CASCADE,
-    UNIQUE(name, user_id)
-);
-
--- Create teams table
-CREATE TABLE teams (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    name TEXT NOT NULL,
-    description TEXT,
-    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-    created_by TEXT NOT NULL,
-    avatar_url TEXT,
-    is_personal BOOLEAN DEFAULT false
-);
-
--- Create team member relationship table
-CREATE TABLE team_user_relation (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    team_id UUID,
-    user_id TEXT NOT NULL,
-    role TEXT NOT NULL CHECK (role IN ('owner', 'admin', 'member')),
-    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-    created_by TEXT,
-    UNIQUE(team_id, user_id)
-);
-
--- Create contributions table
-CREATE TABLE prompt_contributions (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    title TEXT NOT NULL,
-    role_category TEXT NOT NULL,
-    content TEXT NOT NULL,
-    contributor_email TEXT,
-    contributor_name TEXT,
-    status TEXT NOT NULL DEFAULT 'pending',
-    admin_notes TEXT,
-    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-    reviewed_at TIMESTAMPTZ,
-    reviewed_by TEXT,
-    published_prompt_id UUID,
-    CONSTRAINT valid_status CHECK (status IN ('pending', 'approved', 'rejected'))
-);
-```
-
-More SQL files can be found in the `/sql` directory.
+> 💡 **Tip**: All SQL files include `IF NOT EXISTS` checks, so they can be safely executed multiple times.
 
 ## 🔐 Authentication Configuration
 
 ### Clerk Setup
 
-1. **Create a Clerk application**
+For detailed authentication configuration steps, please refer to: [**DEPLOY_GUIDE.md - Step 3: Configure Clerk Authentication**](./DEPLOY_GUIDE.md#第三步配置-clerk-认证)
 
-   - Visit [Clerk](https://clerk.com)
-   - Create a new application
-   - Select authentication methods (email, social login, etc.)
-2. **Configure OAuth providers**
+**Quick Steps**:
+1. Visit [Clerk](https://clerk.com) and create a new application
+2. Select authentication methods (recommended: Email, Google, GitHub)
+3. Get the Publishable Key and Secret Key
+4. Add them to your environment variables
 
-   - Enable GitHub, Google, and other login methods in the Clerk console
-   - Configure callback URLs
-3. **Get keys**
-
-   - Copy the Publishable Key and Secret Key
-   - Add them to your environment variables
-
-For detailed configuration, refer to the [Clerk official documentation](https://clerk.com/docs)
+For more information, refer to the [Clerk official documentation](https://clerk.com/docs)
 
 ## 🌍 Internationalization
 
@@ -276,10 +199,15 @@ ProrisePromptMinder/
 
 ### Code Standards
 
-- Use ESLint for code checking
-- Follow React Hooks best practices
-- Components use TypeScript (recommended)
-- CSS uses Tailwind CSS
+For detailed code standards, please refer to: [**AGENTS.md**](./AGENTS.md)
+
+**Main Standards**:
+- ✅ Use ESLint for code checking
+- ✅ Follow React Hooks best practices
+- ✅ Use JavaScript (jsx/js files)
+- ✅ CSS uses Tailwind CSS
+- ✅ Use absolute path imports (`@/components/...`)
+- ✅ Export components at the bottom of files
 
 ### Contribution Guidelines
 
@@ -312,10 +240,9 @@ If this project has been helpful to you, welcome to:
 - 🐛 Submit bug reports
 - 💡 Suggest new features
 
-<a href="https://www.buymeacoffee.com/aircrushin" target="_blank">
-  <img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" style="height: 60px !important;width: 217px !important;" >
-</a>
 
 ---
 
-**ProrisePromptMinder** - Making AI prompt management simpler ✨
+<div align="center">
+  <strong>ProrisePromptMinder</strong> - Making AI prompt management simpler ✨
+</div>
