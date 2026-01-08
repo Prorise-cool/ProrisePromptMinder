@@ -211,8 +211,6 @@ CREATE INDEX idx_prompt_contributions_created_at ON prompt_contributions(created
 * `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY`（以 `pk_` 开头）
 * `CLERK_SECRET_KEY`（以 `sk_` 开头）
 
-
-
 ### 3.3 配置域名（部署后再做）
 
 部署完成后，需要回来添加你的 Vercel 域名（**注意：此时需点击页面左上角的 X 或 Back to home 进入控制台主页**）：
@@ -233,7 +231,7 @@ CREATE INDEX idx_prompt_contributions_created_at ON prompt_contributions(created
 
 ### 4.2 配置环境变量
 
-在部署页面，展开 **Environment Variables**，添加以下变量：
+在部署页面，展开 **Environment Variables**，添加以下变量，或是使用import env一键导入项目内env.example：
 
 | 变量名 | 值 |
 |--------|-----|
